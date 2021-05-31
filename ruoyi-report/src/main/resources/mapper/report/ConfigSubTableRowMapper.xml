@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.report.mapper.ConfigSubTableRowMapper">
+
+    <resultMap type="ConfigSubTableRow" id="ConfigSubTableRowResult">
+        <result property="id"    column="id"    />
+        <result property="mainTableId"    column="main_table_id"    />
+        <result property="subTableId"    column="sub_table_id"    />
+        <result property="name"    column="name"    />
+        <result property="order"    column="order"    />
+    </resultMap>
+
+    <sql id="selectConfigSubTableRowVo">
+        select id, main_table_id, sub_table_id, name, `order` from config_sub_table_row
+    </sql>
+
+    <select id="selectConfigSubTableRowList" parameterType="ConfigSubTableRow" resultMap="ConfigSubTableRowResult">
+        <include refid="selectConfigSubTableRowVo"/>
+        <where>
+            <if test="mainTableId != null "> and main_table_id = #{mainTableId}</if>
+            <if test="subTableId != null "> and sub_table_id = #{subTableId}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="order != null "> and `order` = #{order}</if>
+        </where>
+        order by `order` asc
+    </select>
+
+    <select id="selectConfigSubTableRowById" parameterType="Long" resultMap="ConfigSubTableRowResult">
+        <include refid="selectConfigSubTableRowVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertConfigSubTableRow" parameterType="ConfigSubTableRow" useGeneratedKeys="true" keyProperty="id">
+        insert into config_sub_table_row
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="mainTableId != null">main_table_id,</if>
+            <if test="subTableId != null">sub_table_id,</if>
+            <if test="name != null">name,</if>
+            <if test="order != null">order,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="mainTableId != null">#{mainTableId},</if>
+            <if test="subTableId != null">#{subTableId},</if>
+            <if test="name != null">#{name},</if>
+            <if test="order != null">#{order},</if>
+         </trim>
+    </insert>
+
+    <update id="updateConfigSubTableRow" parameterType="ConfigSubTableRow">
+        update config_sub_table_row
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="mainTableId != null">main_table_id = #{mainTableId},</if>
+            <if test="subTableId != null">sub_table_id = #{subTableId},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="order != null">order = #{order},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteConfigSubTableRowById" parameterType="Long">
+        delete from config_sub_table_row where id = #{id}
+    </delete>
+
+    <delete id="deleteConfigSubTableRowByIds" parameterType="String">
+        delete from config_sub_table_row where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

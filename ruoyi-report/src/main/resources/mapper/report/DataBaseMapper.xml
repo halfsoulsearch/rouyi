@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.report.mapper.DataBaseMapper">
+
+    <resultMap type="DataBase" id="DataBaseResult">
+        <result property="id"    column="id"    />
+        <result property="mainTableId"    column="main_table_id"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="recordUserId"    column="record_user_id"    />
+        <result property="status"    column="status"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="date"    column="date"    />
+    </resultMap>
+
+    <sql id="selectDataBaseVo">
+        select id, main_table_id, update_time, create_time, record_user_id, status, remark, create_by, update_by, date from data_base
+    </sql>
+
+    <select id="selectDataBaseList" parameterType="DataBase" resultMap="DataBaseResult">
+        <include refid="selectDataBaseVo"/>
+        <where>
+            <if test="mainTableId != null "> and main_table_id = #{mainTableId}</if>
+            <if test="recordUserId != null "> and record_user_id = #{recordUserId}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="date != null "> and `date` = #{date}</if>
+        </where>
+    </select>
+
+    <select id="selectDataBaseById" parameterType="Long" resultMap="DataBaseResult">
+        <include refid="selectDataBaseVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertDataBase" parameterType="DataBase" useGeneratedKeys="true" keyProperty="id">
+        insert into data_base
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="mainTableId != null">main_table_id,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="recordUserId != null">record_user_id,</if>
+            <if test="status != null">status,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="date != null">date,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="mainTableId != null">#{mainTableId},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="recordUserId != null">#{recordUserId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="date != null">#{date},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDataBase" parameterType="DataBase">
+        update data_base
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="mainTableId != null">main_table_id = #{mainTableId},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="recordUserId != null">record_user_id = #{recordUserId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="date != null">date = #{date},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDataBaseById" parameterType="Long">
+        update data_base set status = -1 where id = #{id}
+    </delete>
+
+    <delete id="deleteDataBaseByIds" parameterType="String">
+        delete from data_base where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

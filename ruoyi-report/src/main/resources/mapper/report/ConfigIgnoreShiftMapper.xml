@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.report.mapper.ConfigIgnoreShiftMapper">
+
+    <resultMap type="ConfigIgnoreShift" id="ConfigIgnoreShiftResult">
+        <result property="id"    column="id"    />
+        <result property="maintableid"    column="mainTableId"    />
+        <result property="subtableid"    column="subTableId"    />
+        <result property="colid"    column="colId"    />
+        <result property="rowid"    column="rowId"    />
+    </resultMap>
+
+    <sql id="selectConfigIgnoreShiftVo">
+        select id, mainTableId, subTableId, colId, rowId from config_ignore_shift
+    </sql>
+
+    <select id="selectConfigIgnoreShiftList" parameterType="ConfigIgnoreShift" resultMap="ConfigIgnoreShiftResult">
+        <include refid="selectConfigIgnoreShiftVo"/>
+        <where>
+            <if test="maintableid != null "> and mainTableId = #{maintableid}</if>
+            <if test="subtableid != null "> and subTableId = #{subtableid}</if>
+            <if test="colid != null "> and colId = #{colid}</if>
+            <if test="rowid != null "> and rowId = #{rowid}</if>
+        </where>
+    </select>
+
+    <select id="selectConfigIgnoreShiftById" parameterType="Long" resultMap="ConfigIgnoreShiftResult">
+        <include refid="selectConfigIgnoreShiftVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertConfigIgnoreShift" parameterType="ConfigIgnoreShift" useGeneratedKeys="true" keyProperty="id">
+        insert into config_ignore_shift
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="maintableid != null">mainTableId,</if>
+            <if test="subtableid != null">subTableId,</if>
+            <if test="colid != null">colId,</if>
+            <if test="rowid != null">rowId,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="maintableid != null">#{maintableid},</if>
+            <if test="subtableid != null">#{subtableid},</if>
+            <if test="colid != null">#{colid},</if>
+            <if test="rowid != null">#{rowid},</if>
+        </trim>
+    </insert>
+
+    <update id="updateConfigIgnoreShift" parameterType="ConfigIgnoreShift">
+        update config_ignore_shift
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="maintableid != null">mainTableId = #{maintableid},</if>
+            <if test="subtableid != null">subTableId = #{subtableid},</if>
+            <if test="colid != null">colId = #{colid},</if>
+            <if test="rowid != null">rowId = #{rowid},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteConfigIgnoreShiftById" parameterType="Long">
+        delete from config_ignore_shift where id = #{id}
+    </delete>
+
+    <delete id="deleteConfigIgnoreShiftByIds" parameterType="String">
+        delete from config_ignore_shift where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

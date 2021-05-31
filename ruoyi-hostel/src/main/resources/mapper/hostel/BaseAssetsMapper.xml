@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hostel.mapper.BaseAssetsMapper">
+    
+    <resultMap type="BaseAssets" id="BaseAssetsResult">
+        <result property="id"    column="id"    />
+        <result property="assetsCode"    column="assets_code"    />
+        <result property="assetsName"    column="assets_name"    />
+        <result property="assetsBarCode"    column="assets_bar_code"    />
+        <result property="assetsBrand"    column="assets_brand"    />
+        <result property="assetsModel"    column="assets_model"    />
+        <result property="purchaseDate"    column="purchase_date"    />
+        <result property="price"    column="price"    />
+        <result property="createCode"    column="create_code"    />
+        <result property="createName"    column="create_name"    />
+        <result property="updateCode"    column="update_code"    />
+        <result property="updateName"    column="update_name"    />
+        <result property="isDeleted"    column="is_deleted"    />
+    </resultMap>
+
+    <sql id="selectBaseAssetsVo">
+        select id, assets_code, assets_name, assets_bar_code, assets_brand, assets_model, purchase_date, price, create_code, create_name, update_code, update_name, is_deleted from base_assets
+    </sql>
+
+    <select id="selectBaseAssetsList" parameterType="BaseAssets" resultMap="BaseAssetsResult">
+        <include refid="selectBaseAssetsVo"/>
+        <where>  
+            <if test="assetsCode != null  and assetsCode != ''"> and assets_code = #{assetsCode}</if>
+            <if test="assetsName != null  and assetsName != ''"> and assets_name like concat('%', #{assetsName}, '%')</if>
+            <if test="assetsBarCode != null  and assetsBarCode != ''"> and assets_bar_code = #{assetsBarCode}</if>
+            <if test="assetsBrand != null  and assetsBrand != ''"> and assets_brand = #{assetsBrand}</if>
+            <if test="assetsModel != null  and assetsModel != ''"> and assets_model = #{assetsModel}</if>
+            <if test="purchaseDate != null "> and purchase_date = #{purchaseDate}</if>
+            <if test="price != null "> and price = #{price}</if>
+            <if test="createCode != null  and createCode != ''"> and create_code = #{createCode}</if>
+            <if test="createName != null  and createName != ''"> and create_name like concat('%', #{createName}, '%')</if>
+            <if test="updateCode != null  and updateCode != ''"> and update_code = #{updateCode}</if>
+            <if test="updateName != null  and updateName != ''"> and update_name like concat('%', #{updateName}, '%')</if>
+            <if test="isDeleted != null "> and is_deleted = #{isDeleted}</if>
+        </where>
+    </select>
+    
+    <select id="selectBaseAssetsById" parameterType="Long" resultMap="BaseAssetsResult">
+        <include refid="selectBaseAssetsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertBaseAssets" parameterType="BaseAssets" useGeneratedKeys="true" keyProperty="id">
+        insert into base_assets
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="assetsCode != null">assets_code,</if>
+            <if test="assetsName != null">assets_name,</if>
+            <if test="assetsBarCode != null">assets_bar_code,</if>
+            <if test="assetsBrand != null">assets_brand,</if>
+            <if test="assetsModel != null">assets_model,</if>
+            <if test="purchaseDate != null">purchase_date,</if>
+            <if test="price != null">price,</if>
+            <if test="createCode != null">create_code,</if>
+            <if test="createName != null">create_name,</if>
+            <if test="updateCode != null">update_code,</if>
+            <if test="updateName != null">update_name,</if>
+            <if test="isDeleted != null">is_deleted,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="assetsCode != null">#{assetsCode},</if>
+            <if test="assetsName != null">#{assetsName},</if>
+            <if test="assetsBarCode != null">#{assetsBarCode},</if>
+            <if test="assetsBrand != null">#{assetsBrand},</if>
+            <if test="assetsModel != null">#{assetsModel},</if>
+            <if test="purchaseDate != null">#{purchaseDate},</if>
+            <if test="price != null">#{price},</if>
+            <if test="createCode != null">#{createCode},</if>
+            <if test="createName != null">#{createName},</if>
+            <if test="updateCode != null">#{updateCode},</if>
+            <if test="updateName != null">#{updateName},</if>
+            <if test="isDeleted != null">#{isDeleted},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBaseAssets" parameterType="BaseAssets">
+        update base_assets
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="assetsCode != null">assets_code = #{assetsCode},</if>
+            <if test="assetsName != null">assets_name = #{assetsName},</if>
+            <if test="assetsBarCode != null">assets_bar_code = #{assetsBarCode},</if>
+            <if test="assetsBrand != null">assets_brand = #{assetsBrand},</if>
+            <if test="assetsModel != null">assets_model = #{assetsModel},</if>
+            <if test="purchaseDate != null">purchase_date = #{purchaseDate},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="createCode != null">create_code = #{createCode},</if>
+            <if test="createName != null">create_name = #{createName},</if>
+            <if test="updateCode != null">update_code = #{updateCode},</if>
+            <if test="updateName != null">update_name = #{updateName},</if>
+            <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBaseAssetsById" parameterType="Long">
+        delete from base_assets where id = #{id}
+    </delete>
+
+    <delete id="deleteBaseAssetsByIds" parameterType="String">
+        delete from base_assets where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

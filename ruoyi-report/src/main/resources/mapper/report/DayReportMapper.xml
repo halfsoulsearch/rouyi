@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.report.mapper.DayReportMapper">
+
+    <resultMap type="DayReport" id="DayReportResult">
+        <id     property="id"         column="id"        />
+        <result property="mainTableId"       column="main_table_id"      />
+        <result property="updateTime"       column="update_time"      />
+        <result property="createTime"       column="create_time"      />
+        <result property="recordUserId"     column="record_user_id"    />
+        <result property="status"       column="status"      />
+        <result property="remark"       column="remark"      />
+        <result property="createBy"       column="create_by"      />
+        <result property="updateBy"       column="update_by"      />
+        <result property="date"       column="date"      />
+        <result property="tableName"       column="table_name"      />
+    </resultMap>
+
+    <select id="selectDayReportList" parameterType="DayReport" resultMap="DayReportResult">
+        select
+            d.*,
+            c.name as table_name,
+            c.url
+       from
+            data_base d
+            LEFT JOIN config_main_table c ON d.main_table_id = c.id
+            LEFT JOIN sys_user u ON d.record_user_id = u.user_id
+            LEFT JOIN config_user_table ct ON u.user_id = ct.user_id = u.user_id
+       where
+            FIND_IN_SET(main_table_id, ct.table_ids) > 0
+       and
+            d.status >= 0
+        <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+            AND date_format(d.`date`,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+        </if>
+        <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+            AND date_format(d.`date`,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+        </if>
+        <if test="mainTableId != null and mainTableId !='' and mainTableId>0">
+            and main_table_id = #{mainTableId}
+        </if>
+       order by
+            id desc
+    </select>
+
+    <!-- ================球团日报表分析===================-->
+    <!-- 每个班的当日数据 -->
+    <select id="dayReportAnalyse" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+            d.shift_id,
+            d.col_id,
+            d.row_id,
+            d.value_number AS today_value_number,
+            d.value_text
+        FROM
+            data_value d
+        left join
+            config_sub_table_col c
+        on  d.col_id = c.id
+        left join
+            config_sub_table_row r
+        on  d.row_id = r.id
+        WHERE
+            d.main_table_id = #{mainTableId}
+            AND d.sub_table_id = #{subTableId}
+            AND d.date = #{date}
+        GROUP BY
+            shift_id,
+            col_id,
+            row_id
+        order by
+            c.`order`,r.`order`
+    </select>
+    <!-- 查询每个班次当月度累计数 -->
+    <select id="dayReportAnalyseTotal" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+            m.`name` as report_name,
+            date_format( date, '%Y-%m' ) AS month_num,
+            shift_id,
+            col_id,
+            row_id,
+            case
+                when r.statistics_type='AVG' or c.statistics_type = 'AVG' then
+                    format(avg(value_number),3)
+                else
+                    format(sum(value_number),3)
+                end month_value_number
+        FROM
+            data_value v
+            LEFT JOIN config_sub_table_col c ON v.col_id = c.id
+            LEFT JOIN config_sub_table_row r ON v.row_id = r.id
+            LEFT JOIN config_main_table m on v.main_table_id = m.id
+        WHERE
+            v.main_table_id = #{mainTableId}
+            AND v.sub_table_id = #{subTableId}
+            AND date_format( date, '%Y-%m' ) = date_format( #{date}, '%Y-%m' )
+        GROUP BY
+            shift_id,
+            col_id,
+            row_id
+    </select>
+
+</mapper>

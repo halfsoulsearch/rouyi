@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hostel.mapper.BaseAssetsRepairInfoMapper">
+    
+    <resultMap type="BaseAssetsRepairInfo" id="BaseAssetsRepairInfoResult">
+        <result property="id"    column="id"    />
+        <result property="assetsId"    column="assets_id"    />
+        <result property="assetsCode"    column="assets_code"    />
+        <result property="assetsName"    column="assets_name"    />
+        <result property="roomId"    column="room_id"    />
+        <result property="repairDate"    column="repair_date"    />
+        <result property="repairReason"    column="repair_reason"    />
+        <result property="repairPrice"    column="repair_price"    />
+        <result property="createCode"    column="create_code"    />
+        <result property="createDate"    column="create_date"    />
+        <result property="isDeleted"    column="is_deleted"    />
+    </resultMap>
+
+    <sql id="selectBaseAssetsRepairInfoVo">
+        select id, assets_id, assets_code, assets_name, room_id, repair_date, repair_reason, repair_price, create_code, create_date, is_deleted from base_assets_repair_info
+    </sql>
+
+    <select id="selectBaseAssetsRepairInfoList" parameterType="BaseAssetsRepairInfo" resultMap="BaseAssetsRepairInfoResult">
+        <include refid="selectBaseAssetsRepairInfoVo"/>
+        <where>  
+            <if test="assetsId != null "> and assets_id = #{assetsId}</if>
+            <if test="assetsCode != null  and assetsCode != ''"> and assets_code = #{assetsCode}</if>
+            <if test="assetsName != null  and assetsName != ''"> and assets_name like concat('%', #{assetsName}, '%')</if>
+            <if test="roomId != null "> and room_id = #{roomId}</if>
+            <if test="repairDate != null "> and repair_date = #{repairDate}</if>
+            <if test="repairReason != null  and repairReason != ''"> and repair_reason = #{repairReason}</if>
+            <if test="repairPrice != null "> and repair_price = #{repairPrice}</if>
+            <if test="createCode != null  and createCode != ''"> and create_code = #{createCode}</if>
+            <if test="createDate != null "> and create_date = #{createDate}</if>
+            <if test="isDeleted != null "> and is_deleted = #{isDeleted}</if>
+        </where>
+    </select>
+    
+    <select id="selectBaseAssetsRepairInfoById" parameterType="Long" resultMap="BaseAssetsRepairInfoResult">
+        <include refid="selectBaseAssetsRepairInfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertBaseAssetsRepairInfo" parameterType="BaseAssetsRepairInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into base_assets_repair_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="assetsId != null">assets_id,</if>
+            <if test="assetsCode != null">assets_code,</if>
+            <if test="assetsName != null">assets_name,</if>
+            <if test="roomId != null">room_id,</if>
+            <if test="repairDate != null">repair_date,</if>
+            <if test="repairReason != null">repair_reason,</if>
+            <if test="repairPrice != null">repair_price,</if>
+            <if test="createCode != null">create_code,</if>
+            <if test="createDate != null">create_date,</if>
+            <if test="isDeleted != null">is_deleted,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="assetsId != null">#{assetsId},</if>
+            <if test="assetsCode != null">#{assetsCode},</if>
+            <if test="assetsName != null">#{assetsName},</if>
+            <if test="roomId != null">#{roomId},</if>
+            <if test="repairDate != null">#{repairDate},</if>
+            <if test="repairReason != null">#{repairReason},</if>
+            <if test="repairPrice != null">#{repairPrice},</if>
+            <if test="createCode != null">#{createCode},</if>
+            <if test="createDate != null">#{createDate},</if>
+            <if test="isDeleted != null">#{isDeleted},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBaseAssetsRepairInfo" parameterType="BaseAssetsRepairInfo">
+        update base_assets_repair_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="assetsId != null">assets_id = #{assetsId},</if>
+            <if test="assetsCode != null">assets_code = #{assetsCode},</if>
+            <if test="assetsName != null">assets_name = #{assetsName},</if>
+            <if test="roomId != null">room_id = #{roomId},</if>
+            <if test="repairDate != null">repair_date = #{repairDate},</if>
+            <if test="repairReason != null">repair_reason = #{repairReason},</if>
+            <if test="repairPrice != null">repair_price = #{repairPrice},</if>
+            <if test="createCode != null">create_code = #{createCode},</if>
+            <if test="createDate != null">create_date = #{createDate},</if>
+            <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBaseAssetsRepairInfoById" parameterType="Long">
+        delete from base_assets_repair_info where id = #{id}
+    </delete>
+
+    <delete id="deleteBaseAssetsRepairInfoByIds" parameterType="String">
+        delete from base_assets_repair_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <select id="getRepairInfoPage" resultType="com.ruoyi.hostel.domain.vo.SearchBaseAssetsRepairInfoVO">
+        SELECT
+            i.id AS id,
+            i.assets_id AS assetsId,
+            i.assets_code AS assetsCode,
+            i.assets_name AS assetsName,
+            i.repair_date AS repairDate,
+            i.repair_reason AS repairReason,
+            i.repair_price AS repairPrice
+        FROM
+            base_assets_repair_info i
+            WHERE i.assets_id = #{assetsId}
+    </select>
+
+</mapper>

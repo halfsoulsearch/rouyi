@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hostel.mapper.BaseTypeGroupMapper">
+    
+    <resultMap type="BaseTypeGroup" id="BaseTypeGroupResult">
+        <result property="baseTypeId"    column="base_type_id"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="ancestors"    column="ancestors"    />
+        <result property="typeName"    column="type_name"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="typeGroupNum"    column="type_group_num"    />
+        <result property="typeGroupName"    column="type_group_name"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectBaseTypeGroupVo">
+        select base_type_id, parent_id, ancestors, type_name, order_num, type_group_num, type_group_name, status, del_flag, create_by, create_time, update_by, update_time from base_type_group
+    </sql>
+
+    <select id="selectBaseTypeGroupList" parameterType="BaseTypeGroup" resultMap="BaseTypeGroupResult">
+        <include refid="selectBaseTypeGroupVo"/>
+        <where>  
+            <if test="parentId != null "> and parent_id = #{parentId}</if>
+            <if test="ancestors != null  and ancestors != ''"> and ancestors like concat('%', #{ancestors}, '%')</if>
+            <if test="typeName != null  and typeName != ''"> and type_name like concat('%', #{typeName}, '%')</if>
+            <if test="orderNum != null "> and order_num = #{orderNum}</if>
+            <if test="typeGroupNum != null "> and type_group_num = #{typeGroupNum}</if>
+            <if test="typeGroupName != null  and typeGroupName != ''"> and type_group_name like concat('%', #{typeGroupName}, '%')</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectBaseTypeGroupById" parameterType="Long" resultMap="BaseTypeGroupResult">
+        <include refid="selectBaseTypeGroupVo"/>
+        where base_type_id = #{baseTypeId}
+    </select>
+        
+    <insert id="insertBaseTypeGroup" parameterType="BaseTypeGroup" useGeneratedKeys="true" keyProperty="baseTypeId">
+        insert into base_type_group
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">parent_id,</if>
+            <if test="ancestors != null">ancestors,</if>
+            <if test="typeName != null">type_name,</if>
+            <if test="orderNum != null">order_num,</if>
+            <if test="typeGroupNum != null">type_group_num,</if>
+            <if test="typeGroupName != null">type_group_name,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">#{parentId},</if>
+            <if test="ancestors != null">#{ancestors},</if>
+            <if test="typeName != null">#{typeName},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="typeGroupNum != null">#{typeGroupNum},</if>
+            <if test="typeGroupName != null">#{typeGroupName},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBaseTypeGroup" parameterType="BaseTypeGroup">
+        update base_type_group
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="ancestors != null">ancestors = #{ancestors},</if>
+            <if test="typeName != null">type_name = #{typeName},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="typeGroupNum != null">type_group_num = #{typeGroupNum},</if>
+            <if test="typeGroupName != null">type_group_name = #{typeGroupName},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where base_type_id = #{baseTypeId}
+    </update>
+
+    <delete id="deleteBaseTypeGroupById" parameterType="Long">
+        delete from base_type_group where base_type_id = #{baseTypeId}
+    </delete>
+
+    <delete id="deleteBaseTypeGroupByIds" parameterType="String">
+        delete from base_type_group where base_type_id in 
+        <foreach item="baseTypeId" collection="array" open="(" separator="," close=")">
+            #{baseTypeId}
+        </foreach>
+    </delete>
+</mapper>

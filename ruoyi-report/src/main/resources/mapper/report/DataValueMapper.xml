@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.report.mapper.DataValueMapper">
+
+    <resultMap type="DataValue" id="DataValueResult">
+        <result property="id"    column="id"    />
+        <result property="mainTableId"    column="main_table_id"    />
+        <result property="subTableId"    column="sub_table_id"    />
+        <result property="colId"    column="col_id"    />
+        <result property="rowId"    column="row_id"    />
+        <result property="date"    column="date"    />
+        <result property="shiftId"    column="shift_id"    />
+        <result property="valueType"    column="value_type"    />
+        <result property="valueNumber"    column="value_number"    />
+        <result property="valueText"    column="value_text"    />
+    </resultMap>
+
+    <sql id="selectDataValueVo">
+        select id, main_table_id, sub_table_id, col_id, row_id, date, shift_id, value_type, value_number, value_text from data_value
+    </sql>
+
+    <select id="selectDataValueList" parameterType="DataValue" resultMap="DataValueResult">
+        <include refid="selectDataValueVo"/>
+        <where>
+            <if test="mainTableId != null "> and main_table_id = #{mainTableId}</if>
+            <if test="date != null "> and `date` = #{date}</if>
+        </where>
+    </select>
+
+    <select id="selectDataValueById" parameterType="Long" resultMap="DataValueResult">
+        <include refid="selectDataValueVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertDataValue" parameterType="DataValue" useGeneratedKeys="true" keyProperty="id">
+        insert into data_value
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="mainTableId != null">main_table_id,</if>
+            <if test="subTableId != null">sub_table_id,</if>
+            <if test="colId != null">col_id,</if>
+            <if test="rowId != null">row_id,</if>
+            <if test="date != null">date,</if>
+            <if test="shiftId != null">shift_id,</if>
+            <if test="valueType != null">value_type,</if>
+            <if test="valueNumber != null">value_number,</if>
+            <if test="valueText != null">value_text,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="mainTableId != null">#{mainTableId},</if>
+            <if test="subTableId != null">#{subTableId},</if>
+            <if test="colId != null">#{colId},</if>
+            <if test="rowId != null">#{rowId},</if>
+            <if test="date != null">#{date},</if>
+            <if test="shiftId != null">#{shiftId},</if>
+            <if test="valueType != null">#{valueType},</if>
+            <if test="valueNumber != null">#{valueNumber},</if>
+            <if test="valueText != null">#{valueText},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDataValue" parameterType="DataValue">
+        update data_value
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="mainTableId != null">main_table_id = #{mainTableId},</if>
+            <if test="subTableId != null">sub_table_id = #{subTableId},</if>
+            <if test="colId != null">col_id = #{colId},</if>
+            <if test="rowId != null">row_id = #{rowId},</if>
+            <if test="date != null">date = #{date},</if>
+            <if test="shiftId != null">shift_id = #{shiftId},</if>
+            <if test="valueType != null">value_type = #{valueType},</if>
+            value_number = #{valueNumber},
+            value_text = #{valueText},
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDataValueById" parameterType="Long">
+        delete from data_value where id = #{id}
+    </delete>
+
+    <delete id="deleteDataValueByIds" parameterType="String">
+        delete from data_value where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

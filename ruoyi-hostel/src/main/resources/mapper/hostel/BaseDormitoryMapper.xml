@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hostel.mapper.BaseDormitoryMapper">
+    
+    <resultMap type="BaseDormitory" id="BaseDormitoryResult">
+        <result property="id"    column="id"    />
+        <result property="dormitoryCode"    column="dormitory_code"    />
+        <result property="dormitoryName"    column="dormitory_name"    />
+        <result property="layer"    column="layer"    />
+        <result property="accessControlId"    column="access_control_id"    />
+        <result property="region"    column="region"    />
+        <result property="createCode"    column="create_code"    />
+        <result property="createName"    column="create_name"    />
+        <result property="updateCode"    column="update_code"    />
+        <result property="updateName"    column="update_name"    />
+        <result property="isDeleted"    column="is_deleted"    />
+    </resultMap>
+
+    <sql id="selectBaseDormitoryVo">
+        select id, dormitory_code, dormitory_name, layer, access_control_id, region, create_code, create_name, update_code, update_name, is_deleted from base_dormitory
+    </sql>
+
+    <select id="selectBaseDormitoryList" parameterType="BaseDormitory" resultMap="BaseDormitoryResult">
+        <include refid="selectBaseDormitoryVo"/>
+        <where>  
+            <if test="dormitoryCode != null  and dormitoryCode != ''"> and dormitory_code like concat('%', #{dormitoryCode}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectBaseDormitoryById" parameterType="Long" resultMap="BaseDormitoryResult">
+        <include refid="selectBaseDormitoryVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertBaseDormitory" parameterType="BaseDormitory" useGeneratedKeys="true" keyProperty="id">
+        insert into base_dormitory
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dormitoryCode != null">dormitory_code,</if>
+            <if test="dormitoryName != null">dormitory_name,</if>
+            <if test="layer != null">layer,</if>
+            <if test="accessControlId != null">access_control_id,</if>
+            <if test="region != null">region,</if>
+            <if test="createCode != null">create_code,</if>
+            <if test="createName != null">create_name,</if>
+            <if test="updateCode != null">update_code,</if>
+            <if test="updateName != null">update_name,</if>
+            <if test="isDeleted != null">is_deleted,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dormitoryCode != null">#{dormitoryCode},</if>
+            <if test="dormitoryName != null">#{dormitoryName},</if>
+            <if test="layer != null">#{layer},</if>
+            <if test="accessControlId != null">#{accessControlId},</if>
+            <if test="region != null">#{region},</if>
+            <if test="createCode != null">#{createCode},</if>
+            <if test="createName != null">#{createName},</if>
+            <if test="updateCode != null">#{updateCode},</if>
+            <if test="updateName != null">#{updateName},</if>
+            <if test="isDeleted != null">#{isDeleted},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBaseDormitory" parameterType="BaseDormitory">
+        update base_dormitory
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dormitoryCode != null">dormitory_code = #{dormitoryCode},</if>
+            <if test="dormitoryName != null">dormitory_name = #{dormitoryName},</if>
+            <if test="layer != null">layer = #{layer},</if>
+            <if test="accessControlId != null">access_control_id = #{accessControlId},</if>
+            <if test="region != null">region = #{region},</if>
+            <if test="createCode != null">create_code = #{createCode},</if>
+            <if test="createName != null">create_name = #{createName},</if>
+            <if test="updateCode != null">update_code = #{updateCode},</if>
+            <if test="updateName != null">update_name = #{updateName},</if>
+            <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBaseDormitoryById" parameterType="Long">
+        delete from base_dormitory where id = #{id}
+    </delete>
+
+    <delete id="deleteBaseDormitoryByIds" parameterType="String">
+        delete from base_dormitory where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

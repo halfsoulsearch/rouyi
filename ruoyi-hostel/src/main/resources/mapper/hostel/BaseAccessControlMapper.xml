@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hostel.mapper.BaseAccessControlMapper">
+    
+    <resultMap type="BaseAccessControl" id="BaseAccessControlResult">
+        <result property="id"    column="id"    />
+        <result property="acCode"    column="ac_code"    />
+        <result property="acName"    column="ac_name"    />
+        <result property="acPlace"    column="ac_place"    />
+        <result property="createCode"    column="create_code"    />
+        <result property="createDate"    column="create_date"    />
+        <result property="updateCode"    column="update_code"    />
+        <result property="updateDate"    column="update_date"    />
+        <result property="isDeleted"    column="is_deleted"    />
+    </resultMap>
+
+    <sql id="selectBaseAccessControlVo">
+        select id, ac_code, ac_name, ac_place, create_code, create_date, update_code, update_date, is_deleted from base_access_control
+    </sql>
+
+    <select id="selectBaseAccessControlList" parameterType="BaseAccessControl" resultMap="BaseAccessControlResult">
+        <include refid="selectBaseAccessControlVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+            <if test="acCode != null  and acCode != ''"> and ac_code like concat('%', #{acCode}, '%')</if>
+            <if test="acName != null  and acName != ''"> and ac_name like concat('%', #{acName}, '%')</if>
+            <if test="acPlace != null  and acPlace != ''"> and ac_place like concat('%', #{acPlace}, '%')</if>
+            <if test="createCode != null  and createCode != ''"> and create_code like concat('%', #{createCode}, '%')</if>
+            <if test="createDate != null "> and create_date = #{createDate}</if>
+            <if test="updateCode != null  and updateCode != ''"> and update_code like concat('%', #{updateCode}, '%')</if>
+            <if test="updateDate != null  and updateDate != ''"> and update_date = #{updateDate}</if>
+            <if test="isDeleted != null "> and is_deleted = #{isDeleted}</if>
+        </where>
+    </select>
+    
+    <select id="selectBaseAccessControlById" parameterType="Long" resultMap="BaseAccessControlResult">
+        <include refid="selectBaseAccessControlVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertBaseAccessControl" parameterType="BaseAccessControl" useGeneratedKeys="true" keyProperty="id">
+        insert into base_access_control
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="acCode != null">ac_code,</if>
+            <if test="acName != null">ac_name,</if>
+            <if test="acPlace != null">ac_place,</if>
+            <if test="createCode != null">create_code,</if>
+            <if test="createDate != null">create_date,</if>
+            <if test="updateCode != null">update_code,</if>
+            <if test="updateDate != null">update_date,</if>
+            <if test="isDeleted != null">is_deleted,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="acCode != null">#{acCode},</if>
+            <if test="acName != null">#{acName},</if>
+            <if test="acPlace != null">#{acPlace},</if>
+            <if test="createCode != null">#{createCode},</if>
+            <if test="createDate != null">#{createDate},</if>
+            <if test="updateCode != null">#{updateCode},</if>
+            <if test="updateDate != null">#{updateDate},</if>
+            <if test="isDeleted != null">#{isDeleted},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBaseAccessControl" parameterType="BaseAccessControl">
+        update base_access_control
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="acCode != null">ac_code = #{acCode},</if>
+            <if test="acName != null">ac_name = #{acName},</if>
+            <if test="acPlace != null">ac_place = #{acPlace},</if>
+            <if test="createCode != null">create_code = #{createCode},</if>
+            <if test="createDate != null">create_date = #{createDate},</if>
+            <if test="updateCode != null">update_code = #{updateCode},</if>
+            <if test="updateDate != null">update_date = #{updateDate},</if>
+            <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBaseAccessControlById" parameterType="Long">
+        delete from base_access_control where id = #{id}
+    </delete>
+
+    <delete id="deleteBaseAccessControlByIds" parameterType="String">
+        delete from base_access_control where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hostel.mapper.BaseDormitoryLayerMapper">
+    
+    <resultMap type="BaseDormitoryLayer" id="BaseDormitoryLayerResult">
+        <result property="id"    column="id"    />
+        <result property="dormitoryId"    column="dormitory_id"    />
+        <result property="layerNumber"    column="layer_number"    />
+        <result property="roomNumber"    column="room_number"    />
+        <result property="accessControlId"    column="access_control_id"    />
+        <result property="createCode"    column="create_code"    />
+        <result property="createName"    column="create_name"    />
+        <result property="updateCode"    column="update_code"    />
+        <result property="updateName"    column="update_name"    />
+        <result property="isDeleted"    column="is_deleted"    />
+    </resultMap>
+
+    <sql id="selectBaseDormitoryLayerVo">
+        select id, dormitory_id, layer_number, room_number, access_control_id, create_code, create_name, update_code, update_name, is_deleted from base_dormitory_layer
+    </sql>
+
+    <select id="selectBaseDormitoryLayerList" parameterType="BaseDormitoryLayer" resultMap="BaseDormitoryLayerResult">
+        <include refid="selectBaseDormitoryLayerVo"/>
+        <where>  
+            <if test="dormitoryId != null "> and dormitory_id = #{dormitoryId}</if>
+            <if test="layerNumber != null  and layerNumber != ''"> and layer_number = #{layerNumber}</if>
+            <if test="roomNumber != null "> and room_number = #{roomNumber}</if>
+            <if test="accessControlId != null "> and access_control_id = #{accessControlId}</if>
+            <if test="createCode != null  and createCode != ''"> and create_code like concat('%', #{createCode}, '%')</if>
+            <if test="createName != null  and createName != ''"> and create_name like concat('%', #{createName}, '%')</if>
+            <if test="updateCode != null  and updateCode != ''"> and update_code like concat('%', #{updateCode}, '%')</if>
+            <if test="updateName != null  and updateName != ''"> and update_name like concat('%', #{updateName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectBaseDormitoryLayerById" parameterType="Long" resultMap="BaseDormitoryLayerResult">
+        <include refid="selectBaseDormitoryLayerVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertBaseDormitoryLayer" parameterType="BaseDormitoryLayer" useGeneratedKeys="true" keyProperty="id">
+        insert into base_dormitory_layer
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dormitoryId != null">dormitory_id,</if>
+            <if test="layerNumber != null">layer_number,</if>
+            <if test="roomNumber != null">room_number,</if>
+            <if test="accessControlId != null">access_control_id,</if>
+            <if test="createCode != null">create_code,</if>
+            <if test="createName != null">create_name,</if>
+            <if test="updateCode != null">update_code,</if>
+            <if test="updateName != null">update_name,</if>
+            <if test="isDeleted != null">is_deleted,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dormitoryId != null">#{dormitoryId},</if>
+            <if test="layerNumber != null">#{layerNumber},</if>
+            <if test="roomNumber != null">#{roomNumber},</if>
+            <if test="accessControlId != null">#{accessControlId},</if>
+            <if test="createCode != null">#{createCode},</if>
+            <if test="createName != null">#{createName},</if>
+            <if test="updateCode != null">#{updateCode},</if>
+            <if test="updateName != null">#{updateName},</if>
+            <if test="isDeleted != null">#{isDeleted},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBaseDormitoryLayer" parameterType="BaseDormitoryLayer">
+        update base_dormitory_layer
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dormitoryId != null">dormitory_id = #{dormitoryId},</if>
+            <if test="layerNumber != null">layer_number = #{layerNumber},</if>
+            <if test="roomNumber != null">room_number = #{roomNumber},</if>
+            <if test="accessControlId != null">access_control_id = #{accessControlId},</if>
+            <if test="createCode != null">create_code = #{createCode},</if>
+            <if test="createName != null">create_name = #{createName},</if>
+            <if test="updateCode != null">update_code = #{updateCode},</if>
+            <if test="updateName != null">update_name = #{updateName},</if>
+            <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBaseDormitoryLayerById" parameterType="Long">
+        delete from base_dormitory_layer where id = #{id}
+    </delete>
+
+    <delete id="deleteBaseDormitoryLayerByIds" parameterType="String">
+        delete from base_dormitory_layer where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

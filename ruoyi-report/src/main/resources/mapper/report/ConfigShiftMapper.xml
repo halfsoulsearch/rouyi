@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.report.mapper.ConfigShiftMapper">
+
+    <resultMap type="ConfigShift" id="ConfigShiftResult">
+        <result property="id"    column="id"    />
+        <result property="mainTableId"    column="main_table_id"    />
+        <result property="name"    column="name"    />
+    </resultMap>
+
+    <resultMap id="ConfigShiftConfigMainTableResult" type="ConfigShift" extends="ConfigShiftResult">
+        <collection property="configMainTableList" notNullColumn="sub_id" javaType="java.util.List" resultMap="ConfigMainTableResult" />
+    </resultMap>
+
+    <resultMap type="ConfigMainTable" id="ConfigMainTableResult">
+        <result property="id"    column="sub_id"    />
+        <result property="name"    column="sub_name"    />
+    </resultMap>
+
+    <sql id="selectConfigShiftVo">
+        select id, main_table_id, name from config_shift
+    </sql>
+
+    <select id="selectConfigShiftList" parameterType="ConfigShift" resultMap="ConfigShiftResult">
+        <include refid="selectConfigShiftVo"/>
+        <where>
+            <if test="mainTableId != null">main_table_id = #{mainTableId}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectConfigShiftById" parameterType="Long" resultMap="ConfigShiftConfigMainTableResult">
+        select a.id, a.main_table_id, a.name,
+            b.id as sub_id, b.name as sub_name
+        from config_shift a
+        left join config_main_table b on b.id = a.id
+        where a.id = #{id}
+    </select>
+
+    <insert id="insertConfigShift" parameterType="ConfigShift" useGeneratedKeys="true" keyProperty="id">
+        insert into config_shift
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="mainTableId != null">main_table_id,</if>
+            <if test="name != null">name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="mainTableId != null">#{mainTableId},</if>
+            <if test="name != null">#{name},</if>
+         </trim>
+    </insert>
+
+    <update id="updateConfigShift" parameterType="ConfigShift">
+        update config_shift
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="mainTableId != null">main_table_id = #{mainTableId},</if>
+            <if test="name != null">name = #{name},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteConfigShiftById" parameterType="Long">
+        delete from config_shift where id = #{id}
+    </delete>
+
+    <delete id="deleteConfigShiftByIds" parameterType="String">
+        delete from config_shift where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteConfigMainTableByIds" parameterType="String">
+        delete from config_main_table where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteConfigMainTableById" parameterType="Long">
+        delete from config_main_table where id = #{id}
+    </delete>
+
+    <insert id="batchConfigMainTable">
+        insert into config_main_table( id, name) values
+		<foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.id}, #{item.name})
+        </foreach>
+    </insert>
+</mapper>

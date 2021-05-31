@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hostel.mapper.BaseRoomMapper">
+
+    <resultMap type="BaseRoom" id="BaseRoomResult">
+        <result property="id" column="id"/>
+        <result property="layerId" column="layer_id"/>
+        <result property="dormitoryId" column="dormitory_id"/>
+        <result property="roomType" column="room_type"/>
+        <result property="roomNumber" column="room_number"/>
+        <result property="roomStandard" column="room_standard"/>
+        <result property="roomState" column="room_state"/>
+        <result property="roomRank" column="room_rank"/>
+        <result property="roomCode" column="room_code"/>
+        <result property="electricCode" column="electric_code"/>
+        <result property="electricPlace" column="electric_place"/>
+        <result property="waterCode" column="water_code"/>
+        <result property="waterPlace" column="water_place"/>
+        <result property="createCode" column="create_code"/>
+        <result property="createName" column="create_name"/>
+        <result property="updateCode" column="update_code"/>
+        <result property="updateName" column="update_name"/>
+        <result property="isDeleted" column="is_deleted"/>
+    </resultMap>
+
+    <sql id="selectBaseRoomVo">
+        select id, layer_id, room_type, room_number, room_standard, room_state, room_rank, electric_code, electric_place, water_code, water_place, create_code, create_name, update_code, update_name, is_deleted from base_room
+    </sql>
+
+    <select id="selectBaseRoomList" resultType="com.ruoyi.hostel.domain.vo.SearchBaseRoomVO">
+        SELECT
+        r.id AS id,
+        CASE r.room_type
+        WHEN '001' THEN '单间'
+        WHEN '002' THEN '套间'
+        WHEN '003' THEN '家庭房'
+        END AS roomType,
+        r.room_number AS roomNumber,
+        CASE r.room_standard
+        WHEN '001' THEN '1人间'
+        WHEN '002' THEN '2人间'
+        END AS roomStandard,
+        CASE r.room_state
+        WHEN '001' THEN '空闲'
+        WHEN '002' THEN '满员'
+        WHEN '003' THEN '维修'
+        END AS roomState,
+        r.room_rank AS roomRank,
+        r.electric_code AS electricCode,
+        r.electric_place AS electricPlace,
+        r.water_code AS waterCode,
+        r.water_place AS waterPlace
+        FROM
+        base_room r
+        <where>
+            <if test="request.id != null ">and r.id = #{request.id}</if>
+            <if test="request.layerId != null ">and r.layer_id = #{request.layerId}</if>
+            <if test="request.roomType != null  and request.roomType != ''">and r.room_type = #{request.roomType}</if>
+            <if test="request.roomNumber != null  and request.roomNumber != ''">and r.room_number = #{request.roomNumber}</if>
+            <if test="request.roomStandard != null  and request.roomStandard != ''">and r.room_standard = #{request.roomStandard}</if>
+            <if test="request.roomState != null  and request.roomState != ''">and r.room_state = #{request.roomState}</if>
+            <if test="request.roomRank != null ">and r.room_rank = #{request.roomRank}</if>
+            <if test="request.electricCode != null  and request.electricCode != ''">and r.electric_code like concat('%', #{request.electricCode},
+                '%')
+            </if>
+            <if test="request.electricPlace != null  and request.electricPlace != ''">and r.electric_place like concat('%',
+                #{request.electricPlace}, '%')
+            </if>
+            <if test="request.waterCode != null  and request.waterCode != ''">and r.water_code like concat('%', #{request.waterCode}, '%')</if>
+            <if test="request.waterPlace != null  and request.waterPlace != ''">and r.water_place like concat('%', #{request.waterPlace}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectBaseRoomById" parameterType="Long" resultMap="BaseRoomResult">
+        <include refid="selectBaseRoomVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertBaseRoom" parameterType="BaseRoom" useGeneratedKeys="true" keyProperty="id">
+        insert into base_room
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dormitoryId != null">dormitory_id,</if>
+            <if test="layerId != null">layer_id,</if>
+            <if test="roomType != null">room_type,</if>
+            <if test="roomNumber != null">room_number,</if>
+            <if test="roomCode != null">room_code,</if>
+            <if test="roomStandard != null">room_standard,</if>
+            <if test="roomState != null">room_state,</if>
+            <if test="roomRank != null">room_rank,</if>
+            <if test="electricCode != null">electric_code,</if>
+            <if test="electricPlace != null">electric_place,</if>
+            <if test="waterCode != null">water_code,</if>
+            <if test="waterPlace != null">water_place,</if>
+            <if test="createCode != null">create_code,</if>
+            <if test="createName != null">create_name,</if>
+            <if test="updateCode != null">update_code,</if>
+            <if test="updateName != null">update_name,</if>
+            <if test="isDeleted != null">is_deleted,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dormitoryId != null">#{dormitoryId},</if>
+            <if test="layerId != null">#{layerId},</if>
+            <if test="roomType != null">#{roomType},</if>
+            <if test="roomNumber != null">#{roomNumber},</if>
+            <if test="roomCode != null">#{roomCode},</if>
+            <if test="roomStandard != null">#{roomStandard},</if>
+            <if test="roomState != null">#{roomState},</if>
+            <if test="roomRank != null">#{roomRank},</if>
+            <if test="electricCode != null">#{electricCode},</if>
+            <if test="electricPlace != null">#{electricPlace},</if>
+            <if test="waterCode != null">#{waterCode},</if>
+            <if test="waterPlace != null">#{waterPlace},</if>
+            <if test="createCode != null">#{createCode},</if>
+            <if test="createName != null">#{createName},</if>
+            <if test="updateCode != null">#{updateCode},</if>
+            <if test="updateName != null">#{updateName},</if>
+            <if test="isDeleted != null">#{isDeleted},</if>
+        </trim>
+    </insert>
+
+    <update id="updateBaseRoom" parameterType="BaseRoom">
+        update base_room
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="layerId != null">layer_id = #{layerId},</if>
+            <if test="roomType != null">room_type = #{roomType},</if>
+            <if test="roomNumber != null">room_number = #{roomNumber},</if>
+            <if test="roomStandard != null">room_standard = #{roomStandard},</if>
+            <if test="roomState != null">room_state = #{roomState},</if>
+            <if test="roomRank != null">room_rank = #{roomRank},</if>
+            <if test="electricCode != null">electric_code = #{electricCode},</if>
+            <if test="electricPlace != null">electric_place = #{electricPlace},</if>
+            <if test="waterCode != null">water_code = #{waterCode},</if>
+            <if test="waterPlace != null">water_place = #{waterPlace},</if>
+            <if test="createCode != null">create_code = #{createCode},</if>
+            <if test="createName != null">create_name = #{createName},</if>
+            <if test="updateCode != null">update_code = #{updateCode},</if>
+            <if test="updateName != null">update_name = #{updateName},</if>
+            <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBaseRoomById" parameterType="Long">
+        delete from base_room where id = #{id}
+    </delete>
+
+    <delete id="deleteBaseRoomByIds" parameterType="String">
+        delete from base_room where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

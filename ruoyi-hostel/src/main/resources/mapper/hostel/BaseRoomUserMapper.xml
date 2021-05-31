@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hostel.mapper.BaseRoomUserMapper">
+
+    <resultMap type="BaseRoomUser" id="BaseRoomUserResult">
+        <result property="id"    column="Id"    />
+        <result property="roomId"    column="room_id"    />
+        <result property="userCode"    column="user_code"    />
+        <result property="userName"    column="user_name"    />
+        <result property="startDate"    column="start_date"    />
+        <result property="endDate"    column="end_date"    />
+        <result property="createCode"    column="create_code"    />
+        <result property="createDate"    column="create_date"    />
+        <result property="isDeleted"    column="is_deleted"    />
+    </resultMap>
+
+    <sql id="selectBaseRoomUserVo">
+        select Id, room_id, user_code, user_name, start_date, end_date, create_code, create_date, is_deleted from base_room_user
+    </sql>
+
+    <select id="selectBaseRoomUserList" parameterType="BaseRoomUser" resultMap="BaseRoomUserResult">
+        <include refid="selectBaseRoomUserVo"/>
+        <where>
+            <if test="roomId != null "> and room_id = #{roomId}</if>
+            <if test="userCode != null  and userCode != ''"> and user_code = #{userCode}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="startDate != null "> and start_date = #{startDate}</if>
+            <if test="endDate != null "> and end_date = #{endDate}</if>
+            <if test="createCode != null  and createCode != ''"> and create_code = #{createCode}</if>
+            <if test="createDate != null "> and create_date = #{createDate}</if>
+            <if test="isDeleted != null "> and is_deleted = #{isDeleted}</if>
+        </where>
+    </select>
+
+    <select id="selectBaseRoomUserById" parameterType="Long" resultMap="BaseRoomUserResult">
+        <include refid="selectBaseRoomUserVo"/>
+        where Id = #{id}
+    </select>
+
+    <insert id="insertBaseRoomUser" parameterType="BaseRoomUser" useGeneratedKeys="true" keyProperty="id">
+        insert into base_room_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="roomId != null">room_id,</if>
+            <if test="userCode != null">user_code,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="startDate != null">start_date,</if>
+            <if test="endDate != null">end_date,</if>
+            <if test="createCode != null">create_code,</if>
+            <if test="createDate != null">create_date,</if>
+            <if test="isDeleted != null">is_deleted,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="roomId != null">#{roomId},</if>
+            <if test="userCode != null">#{userCode},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="startDate != null">#{startDate},</if>
+            <if test="endDate != null">#{endDate},</if>
+            <if test="createCode != null">#{createCode},</if>
+            <if test="createDate != null">#{createDate},</if>
+            <if test="isDeleted != null">#{isDeleted},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBaseRoomUser" parameterType="BaseRoomUser">
+        update base_room_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="roomId != null">room_id = #{roomId},</if>
+            <if test="userCode != null">user_code = #{userCode},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="startDate != null">start_date = #{startDate},</if>
+            <if test="endDate != null">end_date = #{endDate},</if>
+            <if test="createCode != null">create_code = #{createCode},</if>
+            <if test="createDate != null">create_date = #{createDate},</if>
+            <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+        </trim>
+        where Id = #{id}
+    </update>
+
+    <delete id="deleteBaseRoomUserById" parameterType="Long">
+        delete from base_room_user where Id = #{id}
+    </delete>
+
+    <delete id="deleteBaseRoomUserByIds" parameterType="String">
+        delete from base_room_user where Id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <select id="getRoomUserInfoPage" resultType="com.ruoyi.hostel.domain.vo.SearchBaseRoomUserVO">
+    SELECT
+        u.Id AS id,
+        u.room_id AS roomId,
+        r.room_number AS roomNumber,
+        u.user_code  AS userCode,
+        u.user_name AS userName,
+        u.start_date AS startDate,
+        u.end_date AS endDate
+    FROM
+        base_room_user u
+        JOIN base_room r ON u.room_id = r.id
+    WHERE
+        u.room_id = #{roomId}
+    </select>
+
+
+
+</mapper>
